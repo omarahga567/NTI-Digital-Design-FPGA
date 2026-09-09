@@ -3,10 +3,7 @@ module binary2sevenseg (
     output reg [6:0] seg_out
 );
 
-       // Active-low seven-segment display
-    // seg_out = {g,f,e,d,c,b,a}
-    // 0 = segment ON
-    // 1 = segment OFF
+
 
     always @(*) begin
         case (binary_in)
