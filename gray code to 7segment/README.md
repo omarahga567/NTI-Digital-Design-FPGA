@@ -1,258 +1,247 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>README.md</title>
-<style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-    color: #24292f;
-    background: #ffffff;
-  }
-  h1, h2, h3 {
-    border-bottom: 1px solid #d0d7de;
-    padding-bottom: 0.3em;
-    margin-top: 24px;
-    margin-bottom: 16px;
-  }
-  h1 { font-size: 2em; }
-  h2 { font-size: 1.5em; }
-  h3 { font-size: 1.25em; }
-  code {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    background: #f6f8fa;
-    padding: 0.2em 0.4em;
-    border-radius: 6px;
-    font-size: 85%;
-  }
-  pre {
-    background: #f6f8fa;
-    padding: 16px;
-    overflow: auto;
-    border-radius: 6px;
-    line-height: 1.45;
-  }
-  pre code {
-    background: transparent;
-    padding: 0;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-  }
-  th, td {
-    border: 1px solid #d0d7de;
-    padding: 8px 12px;
-    text-align: left;
-  }
-  th {
-    background: #f6f8fa;
-    font-weight: 600;
-  }
-  ul, ol { padding-left: 2em; }
-  .note {
-    background: #ddf4ff;
-    border-left: 4px solid #0969da;
-    padding: 12px 16px;
-    margin: 16px 0;
-  }
-</style>
-</head>
-<body>
+# Gray Code to Seven-Segment Display Decoder
 
-<h1>Gray Code to 7-Segment Display Converter</h1>
+## 📌 Overview
 
-<p>A pure Verilog RTL design that converts a 4-bit Gray code input into the corresponding 7-segment display patterns (active-low).</p>
+This lab implements and verifies a parameterized **Gray-to-Seven-Segment Decoder** using Verilog HDL.
 
-<p>The design is hierarchical and fully synthesizable:</p>
-<ul>
-  <li><code>gray2binary</code> – converts Gray code to binary</li>
-  <li><code>binary2sevenseg</code> – converts binary to 7-segment patterns</li>
-  <li><code>gray2sevenseg</code> – top-level module that connects the two stages</li>
-</ul>
+The design converts a **Gray-coded** input value into standard binary, then decodes that binary value into the segment pattern needed to drive a 7-segment display.
 
-<hr>
+The conversion is split into two combinational stages — a Gray-to-binary converter and a binary-to-seven-segment decoder — wired together by a top-level module. A self-checking Verilog testbench exercises all 16 Gray-coded input combinations and checks the resulting segment pattern against the expected value.
 
-<h2>Project Structure</h2>
+---
 
-<pre><code>gray2sevenseg/
-├── gray2binary.v          # Gray → Binary converter (parameterized)
-├── binary2sevenseg.v      # Binary → 7-segment decoder
-├── gray2sevenseg.v        # Top-level module
-├── gray2sevenseg_test.v   # Self-checking testbench
-└── README.md              # This file
-</code></pre>
+## 🎯 Objectives
 
-<hr>
+The main objectives of this lab are:
 
-<h2>Modules Overview</h2>
+* Implement a Gray-to-binary converter using Verilog HDL.
+* Implement a binary/hex-to-seven-segment decoder using a `case` statement.
+* Use a parameterized data width for the Gray-to-binary stage.
+* Combine multiple modules into a single top-level design.
+* Implement combinational logic using `assign` and `always @(*)`.
+* Develop a self-checking testbench.
+* Verify the decoder's behavior across the full range of 4-bit Gray-coded inputs.
 
-<h3>1. <code>gray2binary</code></h3>
+---
 
-<p>Parameterized Gray-to-binary converter.</p>
+## 🧩 Module Interfaces
 
-<pre><code>module gray2binary #(
-    parameter WIDTH = 4
-)(
-    input  [WIDTH-1:0] gray_in,
-    output [WIDTH-1:0] binary_out
-);
-</code></pre>
+### `gray2binary`
 
-<ul>
-  <li>MSB of binary is the same as MSB of Gray.</li>
-  <li>Each subsequent bit is produced by XOR of the previous binary bit and the corresponding Gray bit.</li>
-  <li>Fully combinatorial and synthesizable using a <code>generate</code> loop.</li>
-</ul>
+| Signal       | Direction |   Width | Description                  |
+| ------------ | --------- | ------: | ----------------------------- |
+| `gray_in`    | Input     | `WIDTH` | Gray-coded input value        |
+| `binary_out` | Output    | `WIDTH` | Converted binary output value |
 
-<h3>2. <code>binary2sevenseg</code></h3>
+The default value of `WIDTH` is **4 bits**, but it can be changed through the module parameter.
 
-<p>Combinatorial binary-to-7-segment decoder (active-low).</p>
+### `binary2sevenseg`
 
-<pre><code>module binary2sevenseg (
-    input  [3:0] binary_in,
-    output reg [6:0] seg_out
-);
-</code></pre>
+| Signal      | Direction | Width  | Description                       |
+| ----------- | --------- | -----: | ---------------------------------- |
+| `binary_in` | Input     | 4 bits | Binary/hex value (0x0–0xF)         |
+| `seg_out`   | Output    | 7 bits | Seven-segment output (`gfedcba`)   |
 
-<p>Segment encoding (common anode / active-low):</p>
+### `gray2sevenseg` (top level)
 
-<table>
-  <thead>
-    <tr>
-      <th>Binary</th>
-      <th>Hex</th>
-      <th>seg_out (gfedcba)</th>
-      <th>Display</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>0000</td><td>0</td><td><code>1000000</code></td><td>0</td></tr>
-    <tr><td>0001</td><td>1</td><td><code>1111001</code></td><td>1</td></tr>
-    <tr><td>0010</td><td>2</td><td><code>0100100</code></td><td>2</td></tr>
-    <tr><td>0011</td><td>3</td><td><code>0110000</code></td><td>3</td></tr>
-    <tr><td>0100</td><td>4</td><td><code>0011001</code></td><td>4</td></tr>
-    <tr><td>0101</td><td>5</td><td><code>0010010</code></td><td>5</td></tr>
-    <tr><td>0110</td><td>6</td><td><code>0000010</code></td><td>6</td></tr>
-    <tr><td>0111</td><td>7</td><td><code>1111000</code></td><td>7</td></tr>
-    <tr><td>1000</td><td>8</td><td><code>0000000</code></td><td>8</td></tr>
-    <tr><td>1001</td><td>9</td><td><code>0010000</code></td><td>9</td></tr>
-    <tr><td>1010</td><td>A</td><td><code>0001000</code></td><td>A</td></tr>
-    <tr><td>1011</td><td>B</td><td><code>0000011</code></td><td>b</td></tr>
-    <tr><td>1100</td><td>C</td><td><code>1000110</code></td><td>C</td></tr>
-    <tr><td>1101</td><td>D</td><td><code>0100001</code></td><td>d</td></tr>
-    <tr><td>1110</td><td>E</td><td><code>0000110</code></td><td>E</td></tr>
-    <tr><td>1111</td><td>F</td><td><code>0001110</code></td><td>F</td></tr>
-  </tbody>
-</table>
+| Signal    | Direction |   Width | Description                          |
+| --------- | --------- | ------: | ------------------------------------- |
+| `gray_in` | Input     | `WIDTH` | Gray-coded input value                |
+| `seg_out` | Output    | 7 bits  | Seven-segment output for the digit    |
 
-<p>Default case drives all segments off (<code>7'b1111111</code>).</p>
+`gray2sevenseg` instantiates `gray2binary` and `binary2sevenseg` internally and forwards the low 4 bits of the recovered binary value into the decoder.
 
-<h3>3. <code>gray2sevenseg</code> (Top-level)</h3>
+---
 
-<pre><code>module gray2sevenseg #(
-    parameter WIDTH = 4
-)(
-    input  [WIDTH-1:0] gray_in,
-    output [6:0]       seg_out
-);
-</code></pre>
+## ⚙️ Driver Operation
 
-<p>Instantiates:</p>
-<ol>
-  <li><code>gray2binary</code> to convert Gray → Binary</li>
-  <li><code>binary2sevenseg</code> to convert Binary → 7-segment</li>
-</ol>
+### Gray-to-Binary Conversion
 
-<p>Only the lower 4 bits of the binary result are used by the 7-segment decoder (suitable for a single hexadecimal digit).</p>
+The MSB of the binary output equals the MSB of the Gray input, and each remaining bit is the XOR of the previous binary bit with the current Gray bit:
 
-<hr>
+```text
+binary_out[WIDTH-1] = gray_in[WIDTH-1]
+binary_out[i]        = binary_out[i+1] ^ gray_in[i]   for i = WIDTH-2 downto 0
+```
 
-<h2>Testbench</h2>
+This is implemented with a `generate` loop, so it scales automatically with `WIDTH`.
 
-<p>The self-checking testbench (<code>gray2sevenseg_test.v</code>) applies all 16 possible 4-bit Gray codes in the standard reflected Gray-code order and verifies the expected 7-segment patterns.</p>
+### Binary-to-Seven-Segment Decoding
 
-<p>Test sequence (Gray → expected binary value → expected segments):</p>
+The decoder uses a conditional `case` statement inside an `always @(*)` block:
 
-<table>
-  <thead>
-    <tr>
-      <th>Gray</th>
-      <th>Binary</th>
-      <th>Expected seg_out</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td><code>0000</code></td><td>0</td><td><code>1000000</code></td></tr>
-    <tr><td><code>0001</code></td><td>1</td><td><code>1111001</code></td></tr>
-    <tr><td><code>0011</code></td><td>2</td><td><code>0100100</code></td></tr>
-    <tr><td><code>0010</code></td><td>3</td><td><code>0110000</code></td></tr>
-    <tr><td><code>0110</code></td><td>4</td><td><code>0011001</code></td></tr>
-    <tr><td><code>0111</code></td><td>5</td><td><code>0010010</code></td></tr>
-    <tr><td><code>0101</code></td><td>6</td><td><code>0000010</code></td></tr>
-    <tr><td><code>0100</code></td><td>7</td><td><code>1111000</code></td></tr>
-    <tr><td><code>1100</code></td><td>8</td><td><code>0000000</code></td></tr>
-    <tr><td><code>1101</code></td><td>9</td><td><code>0010000</code></td></tr>
-    <tr><td><code>1111</code></td><td>A</td><td><code>0001000</code></td></tr>
-    <tr><td><code>1110</code></td><td>B</td><td><code>0000011</code></td></tr>
-    <tr><td><code>1010</code></td><td>C</td><td><code>1000110</code></td></tr>
-    <tr><td><code>1011</code></td><td>D</td><td><code>0100001</code></td></tr>
-    <tr><td><code>1001</code></td><td>E</td><td><code>0000110</code></td></tr>
-    <tr><td><code>1000</code></td><td>F</td><td><code>0001110</code></td></tr>
-  </tbody>
-</table>
+```text
+seg_out = decode(binary_in)
+```
 
-<p>On success the testbench prints:</p>
+The segment output is **active-low**: a `0` bit turns the corresponding segment **on**. Bit order is `seg_out = {g, f, e, d, c, b, a}`. Any value outside `0x0`–`0xF` (unreachable with a 4-bit input, but included for safety) drives all segments off:
 
-<pre><code>==============================
-       TEST PASSED
-==============================
-</code></pre>
+```text
+seg_out = 7'b1111111
+```
 
-<p>On failure it prints the failing vector and stops simulation.</p>
+---
 
-<hr>
+## 🧪 Verification
 
-<h2>How to Simulate</h2>
+The testbench `gray2sevenseg_test` is a **self-checking testbench**.
 
-<p>Using any IEEE-1364 / SystemVerilog compatible simulator (Icarus Verilog, ModelSim, Vivado, VCS, etc.):</p>
+It instantiates the `gray2sevenseg` module as `dut` and applies all 16 possible 4-bit Gray-coded input values in Gray-code order.
 
-<pre><code># Icarus Verilog example
-iverilog -o gray2sevenseg_tb \
-    gray2binary.v \
-    binary2sevenseg.v \
-    gray2sevenseg.v \
-    gray2sevenseg_test.v
+The `expect` task compares the actual `seg_out` with the expected segment pattern.
 
-vvp gray2sevenseg_tb
-</code></pre>
+The comparison uses the case-inequality operator:
 
-<p>Or with a single command:</p>
+```text
+!==
+```
 
-<pre><code>iverilog -o sim *.v && vvp sim
-</code></pre>
+This ensures the testbench correctly detects any unexpected four-state Verilog values such as `X` or `Z` in the output, not just simple `0`/`1` mismatches.
 
-<hr>
+---
 
-<h2>Design Notes</h2>
+## 🔍 Test Cases
 
-<ul>
-  <li><strong>Fully combinatorial</strong> – no clocks or sequential logic.</li>
-  <li><strong>Parameterized width</strong> – <code>gray2binary</code> and the top-level module accept a <code>WIDTH</code> parameter (default = 4). The 7-segment decoder is fixed to 4 bits.</li>
-  <li><strong>Active-low segments</strong> – suitable for common-anode 7-segment displays.</li>
-  <li><strong>Synthesizable</strong> – uses only continuous assignments, generate blocks and a simple case statement.</li>
-</ul>
+### Test Case 1 — Digit 0
 
-<hr>
+```text
+gray_in = 4'b0000
+```
 
-<h2>Typical Use Case</h2>
+Expected:
 
-<p>Useful for educational purposes, FPGA demos, or any system that presents a Gray-code counter / rotary encoder value on a hexadecimal 7-segment display.</p>
+```text
+seg_out = 7'b1000000
+```
 
-</body>
-</html>
+This verifies that a Gray input of `0000` correctly converts to binary `0000` and decodes to the segment pattern for `0`.
+
+---
+
+### Test Case 2 — Mid-Range Digit
+
+```text
+gray_in = 4'b0110
+```
+
+Expected:
+
+```text
+seg_out = 7'b0011001
+```
+
+This verifies that a non-trivial Gray code (`0110` → binary `0100` → hex `4`) is correctly converted and decoded.
+
+---
+
+### Test Case 3 — Highest Value
+
+```text
+gray_in = 4'b1000
+```
+
+Expected:
+
+```text
+seg_out = 7'b0001110
+```
+
+This verifies that the final Gray-code value (`1000` → binary `1111` → hex `F`) is correctly converted and decoded, confirming the full 16-value sweep completes correctly.
+
+---
+
+## 📊 Verification Summary
+
+| Test | Gray (`gray_in`) | Binary | Expected `seg_out` | Digit |
+| :--: | :----------------: | :----: | :-------------------: | :---: |
+| 1  | 0000 | 0000 | 1000000 | 0 |
+| 2  | 0001 | 0001 | 1111001 | 1 |
+| 3  | 0011 | 0010 | 0100100 | 2 |
+| 4  | 0010 | 0011 | 0110000 | 3 |
+| 5  | 0110 | 0100 | 0011001 | 4 |
+| 6  | 0111 | 0101 | 0010010 | 5 |
+| 7  | 0101 | 0110 | 0000010 | 6 |
+| 8  | 0100 | 0111 | 1111000 | 7 |
+| 9  | 1100 | 1000 | 0000000 | 8 |
+| 10 | 1101 | 1001 | 0010000 | 9 |
+| 11 | 1111 | 1010 | 0001000 | A |
+| 12 | 1110 | 1011 | 0000011 | b |
+| 13 | 1010 | 1100 | 1000110 | C |
+| 14 | 1011 | 1101 | 0100001 | d |
+| 15 | 1001 | 1110 | 0000110 | E |
+| 16 | 1000 | 1111 | 0001110 | F |
+
+If all test cases pass, the testbench displays:
+
+```text
+TEST PASSED
+```
+
+If an incorrect output is detected, the testbench displays:
+
+```text
+TEST FAILED
+```
+
+along with the simulation time and relevant signal values.
+
+---
+
+## 📂 Files
+
+```text
+Gray2SevenSeg/
+│
+├── gray2binary.v
+├── binary2sevenseg.v
+├── gray2sevenseg.v
+├── gray2sevenseg_test.v
+└── README.md
+```
+
+### `gray2binary.v`
+
+Contains the RTL implementation of the parameterized Gray-to-binary converter.
+
+### `binary2sevenseg.v`
+
+Contains the RTL implementation of the binary/hex-to-seven-segment decoder.
+
+### `gray2sevenseg.v`
+
+Contains the top-level module that wires the two stages together.
+
+### `gray2sevenseg_test.v`
+
+Contains the self-checking Verilog testbench used to verify the decoder.
+
+### `README.md`
+
+Contains the documentation and verification results for this lab.
+
+---
+
+## 🛠️ Tools & Technologies
+
+* **HDL:** Verilog
+* **Design:** RTL
+* **Verification:** Verilog Testbench
+* **Simulation:** QuestaSim / ModelSim
+* **Training:** NTI Digital Design Using FPGA
+
+---
+
+## 📚 Concepts Practiced
+
+This lab provides practical experience with:
+
+* Gray-to-binary conversion
+* Combinational logic design
+* Parameterized Verilog modules (`generate` loops)
+* `case` statement-based decoders
+* Multi-module hierarchical design and instantiation
+* Seven-segment display encoding (active-low)
+* Self-checking testbenches
+* Verilog tasks
+* Case inequality (`!==`)
+* RTL simulation
