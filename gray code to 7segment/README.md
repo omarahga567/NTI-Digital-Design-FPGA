@@ -185,6 +185,9 @@ TEST FAILED
 
 along with the simulation time and relevant signal values.
 
+<img width="1910" height="854" alt="Screenshot 2026-09-09 134209" src="https://github.com/user-attachments/assets/d2c41807-8b84-4135-9884-bfd664e63fae" />
+
+
 ---
 
 ## 📂 Files
