@@ -513,12 +513,15 @@ The following table can be completed according to the target FPGA board:
 ## FPGA Simulation / Implementation
 
  <img width="937" height="843" alt="Screenshot 2026-09-10 223955" src="https://github.com/user-attachments/assets/5b21e083-e4d0-455d-a4ac-d0b9021f9aef" />
+ <img width="1122" height="880" alt="Screenshot 2026-09-10 224110" src="https://github.com/user-attachments/assets/0915c785-e230-4c09-a865-fed9996671d3" />
+ <img width="937" height="843" alt="Screenshot 2026-09-10 223955" src="https://github.com/user-attachments/assets/e52399f8-02d0-4bf0-bffb-8da0a7fa18f4" />
+
+
 
 ```
 
-## Hardware Demonstration
 
-> <img width="1560" height="940" alt="Screenshot 2026-09-10 224028" src="https://github.com/user-attachments/assets/0369b6ce-7c8a-4c62-b99c-6666ef84fdb0" />
+
 
 
 
