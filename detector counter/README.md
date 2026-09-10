@@ -166,33 +166,6 @@ HIGH
 FALL_TICK
 ```
 
-### State Diagram
-
-```text
-                  in = 1
-          ┌──────────────────┐
-          │                  ▼
-       ┌──────┐          ┌───────────┐
-       │ IDLE │─────────►│ RISE_TICK │
-       └──┬───┘          └─────┬─────┘
-          │                    │
-       in = 0               in = 1
-          │                    │
-          │                    ▼
-          │                ┌──────┐
-          └───────────────►│ HIGH │
-                           └──┬───┘
-                              │
-                           in = 0
-                              │
-                              ▼
-                       ┌────────────┐
-                       │ FALL_TICK  │
-                       └─────┬──────┘
-                             │
-                             ▼
-                           IDLE
-```
 
 ### Edge Detection Behavior
 
@@ -490,64 +463,6 @@ run -all
 
 ---
 
-# 📈 Simulation Results
-
-## Top-Level Simulation
-
-### Waveform
-
-> **Add your QuestaSim waveform screenshot here.**
-
-```text
-[ PLACE TOP-LEVEL SIMULATION SCREENSHOT HERE ]
-```
-
-### Simulation Description
-
-The waveform should demonstrate:
-
-* Input transitions
-* Rising tick generation
-* Falling tick generation
-* Edge tick generation
-* Rising counter
-* Falling counter
-* Total counter
-* 7-segment outputs
-
----
-
-## Edge Counter Simulation
-
-### Waveform
-
-> **Add your edge counter waveform screenshot here.**
-
-```text
-[ PLACE EDGE COUNTER SIMULATION SCREENSHOT HERE ]
-```
-
-### Expected Result
-
-```text
-Rise Count  = 2
-Fall Count  = 2
-Total Count = 4
-```
-
----
-
-## 7-Segment Decoder Simulation
-
-### Waveform
-
-> **Add your decoder waveform screenshot here.**
-
-```text
-[ PLACE 7-SEGMENT SIMULATION SCREENSHOT HERE ]
-```
-
----
 
 # 🖥️ FPGA Implementation
 
@@ -597,18 +512,16 @@ The following table can be completed according to the target FPGA board:
 
 ## FPGA Simulation / Implementation
 
-> **Add FPGA implementation screenshots here.**
+ <img width="937" height="843" alt="Screenshot 2026-09-10 223955" src="https://github.com/user-attachments/assets/5b21e083-e4d0-455d-a4ac-d0b9021f9aef" />
 
-```text
-[ PLACE FPGA IMPLEMENTATION SCREENSHOT HERE ]
 ```
 
 ## Hardware Demonstration
 
-> **Add a photo of the FPGA board showing the design running here.**
+> <img width="1560" height="940" alt="Screenshot 2026-09-10 224028" src="https://github.com/user-attachments/assets/0369b6ce-7c8a-4c62-b99c-6666ef84fdb0" />
 
-```text
-[ PLACE FPGA HARDWARE PHOTO HERE ]
+
+
 ```
 
 ### Expected Hardware Behavior
