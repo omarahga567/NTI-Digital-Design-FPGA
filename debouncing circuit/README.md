@@ -90,10 +90,11 @@ Expected console output:
 
 ```
 TEST PASSED - (0 to 1)
-<img width="1360" height="358" alt="Screenshot 2026-09-13 203305" src="https://github.com/user-attachments/assets/85751085-b793-46c7-a042-178306049af4" />
-
 TEST PASSED - (1 to 0)
 ```
+<img width="1360" height="358" alt="Screenshot 2026-09-13 203305" src="https://github.com/user-attachments/assets/84c128b1-dfba-454a-886b-8c0ac5d8923e" />
+<img width="1358" height="380" alt="Screenshot 2026-09-13 203413" src="https://github.com/user-attachments/assets/1ed23cc4-12bc-4984-98fd-f665876fa4d8" />
+
 
 ## Notes / Possible Improvements
 
