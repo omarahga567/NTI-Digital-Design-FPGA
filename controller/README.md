@@ -242,6 +242,11 @@ Expected result:
 ```text
 TEST PASSED
 ```
+<img width="833" height="676" alt="Screenshot 2026-09-13 155422" src="https://github.com/user-attachments/assets/0ca4d1ee-54d8-41cc-8f32-b73a04ccdea0" />
+<img width="922" height="456" alt="Screenshot 2026-09-13 155457" src="https://github.com/user-attachments/assets/5e7b0162-2c9b-41d3-8337-8a40aed919d1" />
+<img width="1305" height="583" alt="Screenshot 2026-09-13 155526" src="https://github.com/user-attachments/assets/0bc1b818-3888-479e-9803-e17411a3a22a" />
+
+
 
 ---
 
