@@ -9,7 +9,7 @@ module counter_test;
   reg  [WIDTH-1:0] cnt_in;
   wire [WIDTH-1:0] cnt_out;
 
-  counter
+counter_f
   #(
     .WIDTH ( WIDTH )
    )
